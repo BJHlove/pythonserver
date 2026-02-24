@@ -3,95 +3,99 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>xdayoungx Hub | Roblox Script</title>
+    <title>xdayoungx Hub</title>
     <style>
-        :root {
-            --accent: #ff4757;
-            --bg: #0a0a0a;
-            --card: #1a1a1a;
-        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body, html { height: 100%; overflow: hidden; background: #000; font-family: 'Malgun Gothic', sans-serif; }
 
-        body {
-            background-color: var(--bg);
-            color: white;
-            font-family: 'Inter', sans-serif;
-            margin: 0;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            padding-top: 50px;
-        }
-
-        .hub-card {
-            background: var(--card);
-            padding: 30px;
-            border-radius: 15px;
-            border: 1px solid #333;
-            width: 90%;
-            max-width: 500px;
-            text-align: center;
-            box-shadow: 0 20px 40px rgba(0,0,0,0.6);
-        }
-
-        h1 { color: var(--accent); margin-bottom: 5px; }
-        p { color: #888; margin-bottom: 30px; }
-
-        .script-box {
-            background: #000;
-            padding: 15px;
-            border-radius: 8px;
-            font-family: monospace;
-            font-size: 0.9rem;
-            color: #00ff88;
-            margin-bottom: 20px;
-            overflow-x: auto;
-            white-space: nowrap;
-            border: 1px solid #222;
-        }
-
-        .copy-btn {
-            background: var(--accent);
-            color: white;
-            border: none;
-            padding: 15px 30px;
-            border-radius: 8px;
-            font-weight: bold;
-            cursor: pointer;
+        /* 배경 영상 컨테이너 */
+        .video-background {
+            position: fixed;
+            top: 0;
+            left: 0;
             width: 100%;
-            transition: 0.2s;
+            height: 100%;
+            z-index: -1;
+            pointer-events: none;
         }
 
-        .copy-btn:hover { background: #ff6b81; transform: translateY(-2px); }
-        .links { margin-top: 20px; display: flex; justify-content: center; gap: 15px; }
-        .links a { color: #555; text-decoration: none; font-size: 0.9rem; }
-        .links a:hover { color: var(--accent); }
+        .video-foreground iframe {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 100vw;
+            height: 56.25vw; /* 16:9 비율 */
+            min-height: 100vh;
+            min-width: 177.77vh;
+            transform: translate(-50%, -50%);
+        }
+
+        /* 입장 레이어 */
+        #overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.85);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 100;
+            cursor: pointer;
+            color: white;
+            transition: opacity 0.8s ease;
+        }
+
+        .enter-btn {
+            font-size: 2.5rem;
+            font-weight: bold;
+            border: 3px solid #ff4757;
+            padding: 20px 50px;
+            border-radius: 10px;
+            color: #ff4757;
+            text-transform: uppercase;
+            letter-spacing: 5px;
+            transition: 0.3s;
+        }
+
+        .enter-btn:hover {
+            background: #ff4757;
+            color: white;
+            box-shadow: 0 0 30px #ff4757;
+        }
     </style>
 </head>
 <body>
 
-    <div class="hub-card">
-        <h1>xdayoungx Hub</h1>
-        <p>최고의 로블록스 스크립트 콜렉션</p>
-        
-        <div class="script-box" id="scriptText">
-            loadstring(game:HttpGet("https://raw.githubusercontent.com/xdayoungx/main/hub.lua"))()
-        </div>
+    <div id="overlay" onclick="startExperience()">
+        <div class="enter-btn">ENTER HUB</div>
+    </div>
 
-        <button class="copy-btn" onclick="copyScript()">스크립트 복사하기</button>
-
-        <div class="links">
-            <a href="#">Discord</a>
-            <a href="#">YouTube</a>
-            <a href="#">Github</a>
+    <div class="video-background">
+        <div class="video-foreground">
+            <iframe id="mainPlayer" 
+                    src="https://www.youtube.com/embed/9hg3Po6Xr8M?enablejsapi=1&autoplay=1&mute=1&loop=1&playlist=9hg3Po6Xr8M&controls=0&rel=0&iv_load_policy=3" 
+                    frameborder="0" 
+                    allow="autoplay; encrypted-media">
+            </iframe>
         </div>
     </div>
 
     <script>
-        function copyScript() {
-            const script = document.getElementById('scriptText').innerText;
-            navigator.clipboard.writeText(script).then(() => {
-                alert("스크립트가 클립보드에 복사되었습니다!");
-            });
+        function startExperience() {
+            const player = document.getElementById('mainPlayer');
+            
+            // 유튜브 API 명령: 음소거 해제 및 재생
+            player.contentWindow.postMessage('{"event":"command","func":"unMute","args":""}', '*');
+            player.contentWindow.postMessage('{"event":"command","func":"playVideo","args":""}', '*');
+            
+            // 화면 효과
+            const overlay = document.getElementById('overlay');
+            overlay.style.opacity = '0';
+            setTimeout(() => {
+                overlay.style.display = 'none';
+            }, 800);
         }
     </script>
 </body>
